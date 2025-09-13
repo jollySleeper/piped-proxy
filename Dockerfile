@@ -1,10 +1,11 @@
-FROM rust:slim as BUILD
+# syntax=docker/dockerfile:1.5
+FROM rust:slim AS build
 
 WORKDIR /app/
 
 COPY . .
 
-RUN --mount=type=cache,id=apt-${TARGETARCH},target=/var/cache/apt \
+RUN --mount=type=cache,target=/var/cache/apt \
     apt-get update && \
     apt-get install -y --no-install-recommends \
     ca-certificates \
@@ -16,9 +17,9 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry \
     cargo build --release && \
     mv target/release/piped-proxy .
 
-FROM debian:stable-slim
+FROM debian:stable-slim AS runtime
 
-RUN --mount=type=cache,id=apt-${TARGETARCH},target=/var/cache/apt \
+RUN --mount=type=cache,target=/var/cache/apt \
     apt-get update && \
     apt-get install -y --no-install-recommends \
     ca-certificates && \
@@ -26,7 +27,7 @@ RUN --mount=type=cache,id=apt-${TARGETARCH},target=/var/cache/apt \
 
 WORKDIR /app/
 
-COPY --from=BUILD /app/piped-proxy .
+COPY --from=build /app/piped-proxy .
 
 EXPOSE 8080
 
