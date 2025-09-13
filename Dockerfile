@@ -8,8 +8,7 @@ WORKDIR /app/
 
 COPY . .
 
-RUN --mount=type=cache,id=apt-${TARGETARCH},target=/var/cache/apt \
-    apt-get update && \
+RUN apt-get update && \
     apt-get install -y --no-install-recommends \
       ca-certificates \
       nasm && \
@@ -22,10 +21,8 @@ RUN --mount=type=cache,id=cargo-reg-${TARGETARCH},target=/usr/local/cargo/regist
 
 
 FROM debian:stable-slim AS runtime
-ARG TARGETARCH
 
-RUN --mount=type=cache,id=apt-${TARGETARCH},target=/var/cache/apt \
-    apt-get update && \
+RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     ca-certificates && \
     rm -rf /var/lib/apt/lists/*
