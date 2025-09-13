@@ -14,8 +14,8 @@ RUN apt-get update && \
       nasm && \
     rm -rf /var/lib/apt/lists/*
 
-RUN --mount=type=cache,id=cargo-reg-${TARGETARCH},target=/usr/local/cargo/registry \
-    --mount=type=cache,id=target-${TARGETARCH},target=/app/target \
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+    --mount=type=cache,target=/app/target \
     cargo build --release && \
     mv target/release/piped-proxy .
 

@@ -3,7 +3,7 @@ name: Build and Push Container
 on:
   push:
     branches:
-      - main
+      - feature/add-container-workflow
     paths-ignore:
       - "**.md"
       - ".github/**"
