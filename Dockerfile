@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1.5
 FROM rust:slim AS build
 
 WORKDIR /app/
