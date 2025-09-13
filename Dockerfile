@@ -1,8 +1,5 @@
 # syntax=docker/dockerfile:1.5
-ARG TARGETARCH
-
 FROM rust:slim AS build
-ARG TARGETARCH
 
 WORKDIR /app/
 
@@ -10,21 +7,20 @@ COPY . .
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-      ca-certificates \
-      nasm && \
+        ca-certificates \
+        nasm && \
     rm -rf /var/lib/apt/lists/*
 
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
-    --mount=type=cache,target=/app/target \
+    --mount=type=cache,target=/app/target/  \
     cargo build --release && \
     mv target/release/piped-proxy .
-
 
 FROM debian:stable-slim AS runtime
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    ca-certificates && \
+        ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app/
